@@ -192,19 +192,19 @@ def search(username, password, people):
     return [element for element in people if element['finFoxUsername'] == username and element['finFoxPassword'] == password]
 
 
-if __name__ == '__main__':
-    # let's finish CobrandLogin
-    url = HOST + '/cobrand/login'
-    payload = {
-        "cobrand": {
-            "cobrandLogin": CobrandLogin,
-            "cobrandPassword": CobrandPassword,
-            "locale": "en_US"
-        }
+
+# let's finish CobrandLogin
+url = HOST + '/cobrand/login'
+payload = {
+    "cobrand": {
+        "cobrandLogin": CobrandLogin,
+        "cobrandPassword": CobrandPassword,
+        "locale": "en_US"
     }
-    headers = {'Content-Type': 'application/json'}
-    resp = requests.post(url, data=json.dumps(payload), headers=headers)
-    resp = resp.json()
-    coBrandSession = resp["session"]["cobSession"]
-    print coBrandSession
-    app.run(debug=True)
+}
+headers = {'Content-Type': 'application/json'}
+resp = requests.post(url, data=json.dumps(payload), headers=headers)
+resp = resp.json()
+coBrandSession = resp["session"]["cobSession"]
+print coBrandSession
+app.run(debug=True)
