@@ -207,4 +207,4 @@ resp = requests.post(url, data=json.dumps(payload), headers=headers)
 resp = resp.json()
 coBrandSession = resp["session"]["cobSession"]
 print coBrandSession
-app.run(debug=True)
+# app.run(debug=True)
