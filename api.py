@@ -121,7 +121,32 @@ def accounts():
     }
     url = HOST + '/accounts'
     resp = requests.get(url, headers=headers)
-    return resp.text
+
+    url = HOST + '/transactions?fromDate=2013-01-01'
+    resp = requests.get(url, headers=headers)
+    for t in resp.json()["transaction"]:
+        credit = defaultdict(int)
+        debit = defaultdict(int)
+        for r in resp.json()["transaction"]:
+            monthAndYear = r["date"].split('-')[0] + "-" + r["date"].split('-')[1]
+            if r["baseType"] == 'DEBIT':
+                debit[monthAndYear + "," + str(r["accountId"])] += r["amount"]["amount"]
+            else:
+                credit[monthAndYear + "," + str(r["accountId"])] += r["amount"]["amount"]
+    _credit = []
+    _debit = []
+    for key, value in credit.iteritems():
+        temp = {"key" : key.split(',')[1], "val" : value}
+        _credit.append(temp)
+    for key, value in debit.iteritems():
+        temp = {"key" : key.split(',')[1], "val" : value}
+        _debit.append(temp)
+
+
+    return jsonify({"response" : {
+        "credit" : _credit,
+        "debit" : _debit
+    }})
 
 
 @app.route('/api/transactions')
@@ -167,7 +192,6 @@ def mortageSolutions():
     url = HOST + '/transactions?fromDate=2013-01-01'
     resp = requests.get(url, headers=headers)
     debits = []
-
     credit = defaultdict(int)
     debit = defaultdict(int)
     for r in resp.json()["transaction"]:
@@ -207,4 +231,4 @@ resp = requests.post(url, data=json.dumps(payload), headers=headers)
 resp = resp.json()
 coBrandSession = resp["session"]["cobSession"]
 print coBrandSession
-# app.run(debug=True)
+app.run(debug=True)
